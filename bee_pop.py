@@ -4,7 +4,7 @@ import numpy as np
 from sklearn import linear_model
 
 
-## CLEAN AND SHOW DATA
+## ORGANISE, CLEAN AND SHOW DATA
 
 # Load data into dataframe
 df = pd.read_csv("honeyproduction.csv")
