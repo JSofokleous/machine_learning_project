@@ -78,7 +78,7 @@ example_passengers = norm.transform(example_passengers)
 
 # Take input for a character with features: Name, age, sex and class
 print("\nYou were aboard the Titanic when it struck an iceberg! This machine learning algorithm will determine if you will survive.")
-sample_name = input("\nWhat is your character's name? ")
+sample_name = input("\n\nWhat is your character's name? ")
 sample_age = 0
 while sample_age <= 0:
     sample_age = int(input("\nWhat is the age of your character? "))
@@ -102,4 +102,6 @@ sample_passenger = norm.transform(sample_passenger)
 # Make survival predictions. Round and convert to 1.d.p
 prediction_prob = model.predict_proba(sample_passenger)
 prediction_prob = round(100*prediction_prob[0][1], 2)
-print("\nThe survivial rate for {0} is: {1}%.\nThe accuracy of this model is {2}% and the f1 score is {3}%".format(sample_name, prediction_prob, accuracy, f1))
+print("\n\nThe probability of survivial for {0} is {1}%\nThe accuracy of this model is {2}% and the f1 score is {3}%\n".format(sample_name, prediction_prob, accuracy, f1))
+
+# TODO: Add an input for 'MASTER' than just first class. Learn what this means, does it depend on age? Class?
