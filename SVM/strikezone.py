@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from svm_visualization import draw_boundary
-from players import aaron_judge, jose_altuve, david_ortiz
+from players import aaron_judge
 
 fig, ax = plt.subplots()
 
@@ -24,8 +24,8 @@ def strike_zone(name):
 
 
 strike_zone(aaron_judge)
-strike_zone(jose_altuve)
-strike_zone(david_ortiz)
+# strike_zone(jose_altuve)
+# strike_zone(david_ortiz)
 
 
 

@@ -1,4 +1,4 @@
-from tree import *
+from TREE.tree import *
 import operator
 
 test_point = ['vhigh', 'low', '3', '4', 'med', 'med']
