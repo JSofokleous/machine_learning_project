@@ -5,11 +5,12 @@ def fit_model(model, X_train, y_train, X_test, y_test):
     model.fit(X_train, y_train)
 
     # Score the model 
-    # model.score(X_train, y_train)
-    # model.score(X_test, y_test)
+    model.score(X_train, y_train)
+    model.score(X_test, y_test)
 
-    # Analyse coefficients by printing
-    list(zip(['Sex','Age','FirstClass','SecondClass', 'Master'],model.coef_[0]))
+    # Analyse coefficients by printing:
+    #### AttributeError: coef_ is only available when using a linear kernel
+    # list(zip(['Sex','Age','FirstClass','SecondClass', 'Master'],model.coef_[0]))
 
     # Predict labels using test data
     y_pred = model.predict(X_test)

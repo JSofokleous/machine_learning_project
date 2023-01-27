@@ -1,18 +1,12 @@
 import numpy as np
-import pandas as pd
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score
 
+def get_sample(norm, norm_bool):
+    # Example passenger features (not used later on)
+    # Jack = np.array([0, 20, 0, 0, 0])
+    # Rose = np.array([1, 17, 1, 0, 0])
+    # example_passengers = np.array([Jack, Rose])
+    # example_passengers = norm.transform(example_passengers)
 
-# Example passenger features (not used later on)
-Jack = np.array([0, 20, 0, 0, 0])
-Rose = np.array([1, 17, 1, 0, 0])
-example_passengers = np.array([Jack, Rose])
-example_passengers = norm.transform(example_passengers)
-
-def get_sample():
-    # Take input for a character with features: Name, age, sex and class
-    sample_name = input("\nWhat is your character's name? ")
     sample_age = 0
     while sample_age <= 0:
         sample_age = int(input("\nWhat is the age of your character? "))
@@ -30,6 +24,8 @@ def get_sample():
     elif sample_class == 2: sample_second_class = 1
 
     # Create and normalise 2D array for sample character featires
-    sample_passenger = np.array([[sample_sex, sample_age, sample_first_class, sample_second_class, sample_first_class]])
-    sample_passenger = norm.transform(sample_passenger)
-    return sample_passenger
+    sample_features = np.array([[sample_sex, sample_age, sample_first_class, sample_second_class, sample_first_class]])
+    if norm_bool == True:
+        print("~~~~NORMALISING~~~~")
+        sample_features = norm.transform(sample_features)
+    return sample_features
