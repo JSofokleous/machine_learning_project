@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -11,7 +12,7 @@ from compare.sample import get_sample
 from compare.data import load_clean_data
 from compare.fit import fit_model
 from compare.vis import *
-from compare.k import get_best_k
+from compare.k import *
 
 ## 1: LOAD, ORGANISE AND CLEAN DATA
 # Load cleaned data into a dataframe
@@ -24,7 +25,7 @@ labels = df['Survived']
 
 # Split data into train and test set (where the dataframe X holds the features, and the series y holds the labels)
 X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size = 0.2, random_state=50)
- 
+
 # Normalise the feature data (mean = 0, std = 1)
 norm = StandardScaler()
 X_train_norm = norm.fit_transform(X_train)
@@ -79,15 +80,18 @@ elif model_name == 'svm':
 elif model_name == 'k': 
     # Determine best value of k
     k = get_best_k(X_train_norm, y_train,  X_test_norm, y_test)
-    print("~~~K = {} ~~~".format(k))
+    print("~~~K = {}~~~".format(k))
 
     # Fit data to model and determine accuracy 
     classifier = KNeighborsClassifier(k)
     accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
 
-    # Predict label for new test data
+    # Prompt user to input sample data-points
     sample_features = get_sample(norm, True)
-    if classifier.predict(sample_features) == 1: 
+
+    # Predict label of sample using own KNN model
+    bool = classify(sample_features, X_train_norm, y_train, k)
+    if bool == 1: 
         print("You Survived! The accuracy of this model is {0}% and the f1 score is {1}%\n".format(accuracy, f1))
     else: 
         print("You did not survive! The accuracy of this model is {0}% and the f1 score is {1}%\n".format(accuracy, f1))
