@@ -28,8 +28,14 @@ def distance(data_point, sample_features):
         return final_distance
 
 def classify(sample_features, X_train, y_train, k):
+    # ax.scatter(df.Age, df.Pclass, df.Sex, c=df.Survived, cmap=plt.cm.RdYlBu, alpha=0.5)
+
+    fig = plt.figure()
+    ax  = fig.add_subplot(111, projection='3d')
+
+    ax.scatter(X_train[:,0], X_train[:,1], X_train[:,2], c=y_train, cmap='RdYlBu', alpha=0.25)
     distances = []
-  # Looping through all points in the dataset X_train
+    # Looping through all points in the dataset X_train
     for row_index in range(len(X_train)):
         data_point = X_train[row_index]
         distance_to_point = distance(data_point, sample_features)
@@ -42,13 +48,19 @@ def classify(sample_features, X_train, y_train, k):
     neighbors = distances[0:k]
     success, fail = 0, 0
 
+    ax.scatter(sample_features[:,0], sample_features[:,1], sample_features[:,2], c='k', marker='o', s=150)
+
     # [Distance, index]
     for neighbor in neighbors:
         row_index = neighbor[1]
+
+        ax.scatter(X_train[row_index][0], X_train[row_index][1], X_train[row_index][2], c='dimgrey', marker='1', s=300)
+
         if y_train.iloc[row_index] == 0: 
             fail += 1
         elif y_train.iloc[row_index] == 1:
             success += 1 
 
+    plt.show()
     if success > fail: return 1
     else: return 0

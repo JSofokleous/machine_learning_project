@@ -32,8 +32,3 @@ def make_three(classifier, X_train, y_train):
     ax.set_zlabel('r')
     plt.show()
 
-
-    # fig = plt.figure()
-    # ax  = fig.add_subplot(111, projection='3d')
-    # # ax.scatter(df.Age, df.Pclass, df.Sex, c=df.Survived, cmap=plt.cm.RdYlBu, alpha=0.5)
-

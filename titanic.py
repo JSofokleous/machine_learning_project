@@ -26,10 +26,10 @@ labels = df['Survived']
 # Split data into train and test set (where the dataframe X holds the features, and the series y holds the labels)
 X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size = 0.2, random_state=50)
 
-# Normalise the feature data (mean = 0, std = 1)
-norm = StandardScaler()
-X_train_norm = norm.fit_transform(X_train)
-X_test_norm = norm.transform(X_test)
+# Normalise the feature data (Z-score method: mean = 0, std = 1), only fit StandardScalar to train data.
+normalise = StandardScaler()
+X_train_norm = normalise.fit_transform(X_train)
+X_test_norm = normalise.transform(X_test)
 
 
 ## 2: CHOOSE MODEL
@@ -39,7 +39,7 @@ print("\nYou were aboard the Titanic when it struck an iceberg! This machine lea
 print("\nPlease pick which machine learning model you would like to use to determine your chances of survival. \n\n\n~~~CHOICES~~~\n")
 
 # List of ML models is printed to the user
-models = {'k':'K-Nearest Neighbours', 'log':'Logistic Regression', 'svm':'Support Vector Machine', 'tree':'Decision Tree'}
+models = {'knn':'K-Nearest Neighbours', 'log':'Logistic Regression', 'svm':'Support Vector Machine', 'tree':'Decision Tree'}
 for i in models:
     print("For the {} model, please write \"{}\"".format(models[i], i))
 print("\n~~~~~~~~~~~~~")
@@ -60,7 +60,7 @@ if model_name == 'log':
     accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
 
     # Make prediction for label of new (normalised) test data
-    sample_features = get_sample(norm, True)
+    sample_features = get_sample(normalise, True)
     prediction_prob = classifier.predict_proba(sample_features)
     prediction_prob = round(100*prediction_prob[0][1], 2)
     print("\nYour probability of survivial is {0}%! The accuracy of this model is {1}% and the f1 score is {2}%\n".format(prediction_prob, accuracy, f1))
@@ -71,13 +71,13 @@ elif model_name == 'svm':
     accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
 
     # Predict label for new test data
-    sample_features = get_sample(norm, True)
+    sample_features = get_sample(normalise, True)
     if classifier.predict(sample_features) == 1:
         print("You Survived! The accuracy of this model is {0}% and the f1 score is {1}%\n".format(accuracy, f1))
     else: 
         print("You did not survive! The accuracy of this model is {0}% and the f1 score is {1}%\n".format(accuracy, f1))
 
-elif model_name == 'k': 
+elif model_name == 'knn': 
     # Determine best value of k
     k = get_best_k(X_train_norm, y_train,  X_test_norm, y_test)
     print("~~~K = {}~~~".format(k))
@@ -87,7 +87,7 @@ elif model_name == 'k':
     accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
 
     # Prompt user to input sample data-points
-    sample_features = get_sample(norm, True)
+    sample_features = get_sample(normalise, True)
 
     # Predict label of sample using own KNN model
     bool = classify(sample_features, X_train_norm, y_train, k)
