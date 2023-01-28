@@ -28,12 +28,15 @@ def distance(data_point, sample_features):
         return final_distance
 
 def classify(sample_features, X_train, y_train, k):
-    # ax.scatter(df.Age, df.Pclass, df.Sex, c=df.Survived, cmap=plt.cm.RdYlBu, alpha=0.5)
 
     fig = plt.figure()
     ax  = fig.add_subplot(111, projection='3d')
-
     ax.scatter(X_train[:,0], X_train[:,1], X_train[:,2], c=y_train, cmap='RdYlBu', alpha=0.25)
+    ax.scatter(sample_features[:,0], sample_features[:,1], sample_features[:,2], c='k', marker='o', s=150)
+    ax.set_xlabel('Gender')
+    ax.set_ylabel('Age')
+    ax.set_zlabel('Class')
+
     distances = []
     # Looping through all points in the dataset X_train
     for row_index in range(len(X_train)):
@@ -46,14 +49,12 @@ def classify(sample_features, X_train, y_train, k):
     # Taking only the k closest points
     distances.sort()
     neighbors = distances[0:k]
+    
+    # Determine labels of each neighbour
     success, fail = 0, 0
-
-    ax.scatter(sample_features[:,0], sample_features[:,1], sample_features[:,2], c='k', marker='o', s=150)
-
-    # [Distance, index]
     for neighbor in neighbors:
         row_index = neighbor[1]
-
+        # Add neighbors to scatter
         ax.scatter(X_train[row_index][0], X_train[row_index][1], X_train[row_index][2], c='dimgrey', marker='1', s=300)
 
         if y_train.iloc[row_index] == 0: 
@@ -62,5 +63,12 @@ def classify(sample_features, X_train, y_train, k):
             success += 1 
 
     plt.show()
+
+    # Classify point based on majority of neighbours
     if success > fail: return 1
-    else: return 0
+    elif fail > success: return 0
+
+    # If equal, return label of 
+    else: 
+        print('Equal number of neighbours!')
+        return y_train.iloc(neighbors[0][1])

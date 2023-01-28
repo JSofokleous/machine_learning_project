@@ -6,20 +6,14 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-from mpl_toolkits import mplot3d
 
-from compare.sample import get_sample
-from compare.data import load_clean_data
-from compare.fit import fit_model
-from compare.vis import *
-from compare.k import *
 
-## 1: LOAD, ORGANISE AND CLEAN DATA
+## 1: LOAD DATA
 # Load cleaned data into a dataframe
+from compare.data import load_clean_data
 df = load_clean_data()
-# TODO: Add an input for 'MASTER' than just first class. Learn what this means, does it depend on age? Class?
 
-# Sort data into desired features and labels 
+# Sort data into desired labels and features: ['Sex', 'Age', 'FirstClass', 'SecondClass', 'Master']
 features = df[['Sex', 'Age', 'FirstClass', 'SecondClass', 'Master']]
 labels = df['Survived']
 
@@ -53,25 +47,50 @@ while True:
     print("Please pick a valid model")
 
 
-## 3: CREATE AND USE MODEL 
+## 3: INPUT SAMPLE
+# List current selected features
+feature_names = []
+for col in features.columns:
+    feature_names.append(col)
+print("Feature names: ", feature_names)
+
+# Return user input sample for selected features, and normalise
+from compare.sample import get_sample
+sample_features = [1, 20, 1, 0, 0]
+# sample_features = get_sample(feature_names)
+sample_features = normalise.transform([sample_features])
+
+
+## 4: CREATE AND USE MODEL 
+from compare.fit import fit_model
+from compare.vis import *
+from compare.k import *
+
+# Logistic Regression Model
 if model_name == 'log': 
     # Fit data to model and determine accuracy 
     classifier = LogisticRegression()
     accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
 
-    # Make prediction for label of new (normalised) test data
-    sample_features = get_sample(normalise, True)
+    # Make prediction for probability of label for sample test data
     prediction_prob = classifier.predict_proba(sample_features)
     prediction_prob = round(100*prediction_prob[0][1], 2)
     print("\nYour probability of survivial is {0}%! The accuracy of this model is {1}% and the f1 score is {2}%\n".format(prediction_prob, accuracy, f1))
 
 elif model_name == 'svm': 
-    # Fit data to model and determine accuracy 
-    classifier = SVC(gamma = 0.05, C = 1000)
-    accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
+    # Only allow 2 features to compare
+    X_train_norm = np.vstack([X_train_norm[:,0], X_train_norm[:,1]]).T
+    X_test_norm = np.vstack([X_test_norm[:,0], X_test_norm[:,1]]).T
+    sample_features = [sample_features[0][:2]]
 
-    # Predict label for new test data
-    sample_features = get_sample(normalise, True)
+    # Fit data to model and determine accuracy 
+    classifier = SVC(kernel='linear', C = 0.01)
+    # classifier = SVC(kernel='rbf', gamma = 0.05, C = 1000)
+    accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
+    make_three(classifier, X_train_norm, y_train)
+    make_two(classifier, X_train_norm, y_train)
+
+    # Predict label of sample
     if classifier.predict(sample_features) == 1:
         print("You Survived! The accuracy of this model is {0}% and the f1 score is {1}%\n".format(accuracy, f1))
     else: 
@@ -86,18 +105,13 @@ elif model_name == 'knn':
     classifier = KNeighborsClassifier(k)
     accuracy, f1 = fit_model(classifier, X_train_norm, y_train, X_test_norm, y_test)
 
-    # Prompt user to input sample data-points
-    sample_features = get_sample(normalise, True)
-
     # Predict label of sample using own KNN model
-    bool = classify(sample_features, X_train_norm, y_train, k)
-    if bool == 1: 
+    if classify(sample_features, X_train_norm, y_train, k) == 1: 
         print("You Survived! The accuracy of this model is {0}% and the f1 score is {1}%\n".format(accuracy, f1))
     else: 
         print("You did not survive! The accuracy of this model is {0}% and the f1 score is {1}%\n".format(accuracy, f1))
 
 elif model_name == 'tree': 
-    classifier = LogisticRegression()
+    print("This feature is coming soon!")
 
 else: print("Error loading model")
-
