@@ -1,7 +1,8 @@
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 
-def fit_model(model, X_train, y_train, X_test, y_test):
+def fit_score_model(model, X_train, y_train, X_test, y_test):
+    
     model.fit(X_train, y_train)
 
     # Score the model 
