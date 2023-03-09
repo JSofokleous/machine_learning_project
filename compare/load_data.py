@@ -1,34 +1,37 @@
 import pandas as pd
 
-def load_house():
+def list_feature_names(features, binary):
+    feature_names = {}
+    for i in range(len(features.columns)):
+        feature_names[features.columns[i]] = binary[i]
+    print("Feature names: ", feature_names)
+    feature_names_list = [name for name in feature_names]
+
+    return feature_names, feature_names_list
+
+
+def load_house(budget):
+    # Load data into dataframe
     streeteasy = pd.read_csv('data/rent.csv')
     df = pd.DataFrame(streeteasy)
 
-    # print(labels.rent.mean())
-    # print(features.bathrooms.unique())
-    # print(features.isnull().values.any())
+    # Features
+    df['max_rent'] = df.rent.apply(lambda x: 0 if x >= budget else 1)
+    labels = df['max_rent']
 
-    df['max_rent'] = df.rent.apply(lambda x: 1 if x >= 5000 else 0)
+    # Labels
     df['one_bed'] = df.bedrooms.apply(lambda x: 1 if x == 1 else 0)
     df['two_or_more_bed'] = df.bedrooms.apply(lambda x: 1 if x >= 2 else 0)
-    df['three_or_more_bed'] = df.bedrooms.apply(lambda x: 1 if x >= 3 else 0)
-    df['sub10mins_to_subway'] = df.min_to_subway.apply(lambda x: 1 if x <= 10 else 0)
+    features = df[['size_sqft', 'min_to_subway', 'one_bed', 'two_or_more_bed', 'has_patio', 'has_gym']]
+    binary = [0, 0, 1, 1, 1, 1]
 
-    # df.drop(columns=['bedrooms','bathrooms', 'size_sqft', 'min_to_subway', 'floor', 'building_age_yrs'], inplace=True)
+    print('\nAVG SIZE: ', df.size_sqft.mean())
+    print('AVG TIME TO SUBWAY', df.min_to_subway.mean())
 
-    labels = df['max_rent']
-    features = df[[ 'has_roofdeck', 'has_doorman', 'has_patio', 'has_gym', 'one_bed', 'two_or_more_bed', 'three_or_more_bed', 'sub10mins_to_subway' ]]
-    # features = df[['bedrooms','bathrooms', 'size_sqft', 'min_to_subway', 'floor', 'building_age_yrs', 'has_roofdeck', 'has_doorman', 'has_patio', 'has_gym', 'one_bed', 'two_or_more_bed', 'three_or_more_bed', 'sub10mins_to_subway' ]]
-
-    # print(features.head())
-    # print(labels.head())
-    # print(df.tail())
-
-    return features, labels 
+    return features, binary, labels 
 
 
 def load_titanic():
-
     ## 1A: LOAD DATA
     # Load the passenger data
     df = pd.read_csv('data/passengers.csv')
@@ -56,10 +59,9 @@ def load_titanic():
     df.drop(columns=['Pclass', 'Cabin', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked'], inplace=True)
     
     # Sort data into desired labels and features: ['Sex', 'Age', 'FirstClass', 'SecondClass', 'Master']
-    features = df[['Sex', 'Age', 'FirstClass', 'SecondClass', 'Master']]
+    features = df[['Sex', 'Age', 'FirstClass']]
+    binary = [1, 0, 1]
     labels = df['Survived']
     
-    return features, labels
-
-    # df.to_csv('compare/out.csv', index=False)
+    return features, binary, labels
     
